@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CDRGeneratorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ip-nexign-bootcamp-2025</a> &gt; <a href="index.source.html" class="el_package">com.djeno.ipnexignbootcamp2025.services</a> &gt; <span class="el_source">CDRGeneratorService.java</span></div><h1>CDRGeneratorService.java</h1><pre class="source lang-java linenums">package com.djeno.ipnexignbootcamp2025.services;
+
+import com.djeno.ipnexignbootcamp2025.persistence.enums.CallType;
+import com.djeno.ipnexignbootcamp2025.persistence.models.CDR;
+import com.djeno.ipnexignbootcamp2025.persistence.models.Subscriber;
+import com.djeno.ipnexignbootcamp2025.persistence.repositories.CDRRepository;
+import com.djeno.ipnexignbootcamp2025.persistence.repositories.SubscriberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
+
+@RequiredArgsConstructor
+@Service
+public class CDRGeneratorService {
+
+    private final SubscriberRepository subscriberRepository;
+    private final CDRRepository cdrRepository;
+    private final Random random = new Random();
+
+    public void generateCDRsForYear(int year) {
+<span class="nc" id="L27">        List&lt;Subscriber&gt; subscribers = subscriberRepository.findAll();</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        if (subscribers.size() &lt; 10) {</span>
+<span class="nc" id="L29">            throw new IllegalStateException(&quot;РќРµРѕР±С…РѕРґРёРјРѕ РјРёРЅРёРјСѓРј 10 Р°Р±РѕРЅРµРЅС‚РѕРІ РІ Р±Р°Р·Рµ.&quot;);</span>
+        }
+
+<span class="nc" id="L32">        LocalDateTime startDate = LocalDateTime.of(year, 1, 1, 0, 0);</span>
+<span class="nc" id="L33">        LocalDateTime endDate = LocalDateTime.of(year, 12, 31, 23, 59);</span>
+
+<span class="nc" id="L35">        LocalDateTime currentDate = startDate;</span>
+
+<span class="nc bnc" id="L37" title="All 2 branches missed.">        while (currentDate.isBefore(endDate)) {</span>
+<span class="nc" id="L38">            int callsPerDay = random.nextInt(5) + 1; // 1-5 Р·РІРѕРЅРєРѕРІ РІ РґРµРЅСЊ</span>
+<span class="nc" id="L39">            Collections.shuffle(subscribers);</span>
+
+<span class="nc" id="L41">            List&lt;CDR&gt; dailyCDRs = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            for (int i = 0; i &lt; callsPerDay; i++) {</span>
+<span class="nc" id="L44">                Subscriber caller = subscribers.get(random.nextInt(subscribers.size()));</span>
+<span class="nc" id="L45">                Subscriber receiver = getRandomReceiver(subscribers, caller.getMsisdn());</span>
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">                if (receiver == null) continue;</span>
+
+<span class="nc" id="L49">                CDR cdr = generateCDR(caller, receiver, currentDate);</span>
+<span class="nc" id="L50">                dailyCDRs.add(cdr);</span>
+
+                // РЎР»СѓС‡Р°Р№РЅРѕРµ РІСЂРµРјСЏ РІ С‚РµС‡РµРЅРёРµ РґРЅСЏ (РґРѕ 1 С‡Р°СЃР° РјРµР¶РґСѓ Р·РІРѕРЅРєР°РјРё)
+<span class="nc" id="L53">                currentDate = currentDate.plusSeconds(random.nextInt(3600));</span>
+            }
+<span class="nc" id="L55">            cdrRepository.saveAll(dailyCDRs);</span>
+
+<span class="nc" id="L57">            currentDate = currentDate.withHour(0).withMinute(0).withSecond(0).plusDays(1);</span>
+<span class="nc" id="L58">        }</span>
+<span class="nc" id="L59">    }</span>
+
+    private CDR generateCDR(Subscriber caller, Subscriber receiver, LocalDateTime startTime) {
+<span class="nc" id="L62">        return new CDR(</span>
+                null,
+<span class="nc bnc" id="L64" title="All 2 branches missed.">                random.nextBoolean() ? CallType.OUTGOING : CallType.INCOMING,</span>
+                caller,
+                receiver,
+                startTime,
+<span class="nc" id="L68">                startTime.plusSeconds(random.nextInt(300) + 60) // Р”Р»РёС‚РµР»СЊРЅРѕСЃС‚СЊ 1-5 РјРёРЅСѓС‚</span>
+        );
+    }
+
+    private Subscriber getRandomReceiver(List&lt;Subscriber&gt; subscribers, String callerNumber) {
+<span class="nc" id="L73">        List&lt;Subscriber&gt; filteredSubscribers = subscribers.stream()</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                .filter(sub -&gt; !sub.getMsisdn().equals(callerNumber))</span>
+<span class="nc" id="L75">                .collect(Collectors.toList());</span>
+
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (filteredSubscribers.isEmpty()) {</span>
+<span class="nc" id="L78">            return null;</span>
+        }
+
+<span class="nc" id="L81">        return filteredSubscribers.get(random.nextInt(filteredSubscribers.size()));</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

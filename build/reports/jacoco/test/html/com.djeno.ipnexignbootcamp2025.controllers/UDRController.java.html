@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UDRController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ip-nexign-bootcamp-2025</a> &gt; <a href="index.source.html" class="el_package">com.djeno.ipnexignbootcamp2025.controllers</a> &gt; <span class="el_source">UDRController.java</span></div><h1>UDRController.java</h1><pre class="source lang-java linenums">package com.djeno.ipnexignbootcamp2025.controllers;
+
+import com.djeno.ipnexignbootcamp2025.persistence.DTO.GenerateReportResponse;
+import com.djeno.ipnexignbootcamp2025.persistence.DTO.UdrReport;
+import com.djeno.ipnexignbootcamp2025.services.ReportService;
+import com.djeno.ipnexignbootcamp2025.services.UDRService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+// 2 Р·Р°РґР°С‡Р°
+
+@Tag(name = &quot;РџРѕР»СѓС‡РµРЅРёРµ UDR РѕС‚С‡РµС‚РѕРІ&quot;, description = &quot;API РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ UDR РѕС‚С‡РµС‚РѕРІ (2 Р·Р°РґР°С‡Р°)&quot;)
+@RequiredArgsConstructor
+@RequestMapping(&quot;/udr&quot;)
+@RestController
+public class UDRController {
+
+    private final UDRService udrService;
+
+    @Operation(
+            summary = &quot;РџРѕР»СѓС‡РёС‚СЊ UDR-РѕС‚С‡РµС‚ РїРѕ Р°Р±РѕРЅРµРЅС‚Сѓ&quot;,
+            description = &quot;Р’РѕР·РІСЂР°С‰Р°РµС‚ UDR-РѕС‚С‡РµС‚ РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ Р°Р±РѕРЅРµРЅС‚Р° Р·Р° СѓРєР°Р·Р°РЅРЅС‹Р№ РјРµСЃСЏС† Рё РіРѕРґ РёР»Рё Р·Р° РІРµСЃСЊ РїРµСЂРёРѕРґ.&quot;,
+            responses = {
+                    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;РЈСЃРїРµС€РЅС‹Р№ Р·Р°РїСЂРѕСЃ&quot;),
+                    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Р”Р°РЅРЅС‹Рµ РЅРµ РЅР°Р№РґРµРЅС‹&quot;)
+            }
+    )
+    @GetMapping(&quot;/report&quot;)
+    public UdrReport getUdrReport(
+            @Parameter(description = &quot;РќРѕРјРµСЂ Р°Р±РѕРЅРµРЅС‚Р°&quot;, example = &quot;79991234567&quot;, required = true)
+            @RequestParam String msisdn,
+
+            @Parameter(description = &quot;Р“РѕРґ (РЅР°РїСЂРёРјРµСЂ, 2024). Р•СЃР»Рё РЅРµ СѓРєР°Р·Р°РЅ, РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РґР°РЅРЅС‹Рµ Р·Р° РІРµСЃСЊ РїРµСЂРёРѕРґ.&quot;, example = &quot;2024&quot;)
+            @RequestParam(required = false) Integer year,
+
+            @Parameter(description = &quot;РњРµСЃСЏС† (1-12). Р•СЃР»Рё РЅРµ СѓРєР°Р·Р°РЅ, РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РґР°РЅРЅС‹Рµ Р·Р° РІРµСЃСЊ РїРµСЂРёРѕРґ.&quot;, example = &quot;2&quot;)
+            @RequestParam(required = false) Integer month
+    ) {
+<span class="nc" id="L47">        return udrService.getUdrReport(msisdn, year, month);</span>
+    }
+
+    @Operation(
+            summary = &quot;РџРѕР»СѓС‡РёС‚СЊ UDR-РѕС‚С‡РµС‚С‹ РїРѕ РІСЃРµРј Р°Р±РѕРЅРµРЅС‚Р°Рј Р·Р° РјРµСЃСЏС† Рё РіРѕРґ&quot;,
+            description = &quot;Р’РѕР·РІСЂР°С‰Р°РµС‚ UDR-РѕС‚С‡РµС‚С‹ РґР»СЏ РІСЃРµС… Р°Р±РѕРЅРµРЅС‚РѕРІ Р·Р° СѓРєР°Р·Р°РЅРЅС‹Р№ РјРµСЃСЏС† Рё РіРѕРґ.&quot;,
+            responses = {
+                    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;РЈСЃРїРµС€РЅС‹Р№ Р·Р°РїСЂРѕСЃ&quot;),
+                    @ApiResponse(responseCode = &quot;404&quot;, description = &quot;Р”Р°РЅРЅС‹Рµ РЅРµ РЅР°Р№РґРµРЅС‹&quot;)
+            }
+    )
+    @GetMapping(&quot;/reports&quot;)
+    public List&lt;UdrReport&gt; getUdrReportsForMonth(
+            @Parameter(description = &quot;Р“РѕРґ (РЅР°РїСЂРёРјРµСЂ, 2024)&quot;, example = &quot;2024&quot;, required = true)
+            @RequestParam int year,
+
+            @Parameter(description = &quot;РњРµСЃСЏС† (1-12)&quot;, example = &quot;2&quot;, required = true)
+            @RequestParam int month
+    ) {
+<span class="nc" id="L66">        return udrService.getUdrReportsForMonth(year, month);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

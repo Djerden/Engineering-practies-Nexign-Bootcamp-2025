@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ImportSubscribersController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ip-nexign-bootcamp-2025</a> &gt; <a href="index.source.html" class="el_package">com.djeno.ipnexignbootcamp2025.controllers</a> &gt; <span class="el_source">ImportSubscribersController.java</span></div><h1>ImportSubscribersController.java</h1><pre class="source lang-java linenums">package com.djeno.ipnexignbootcamp2025.controllers;
+
+import com.djeno.ipnexignbootcamp2025.services.ImportSubscribersService;
+import com.djeno.ipnexignbootcamp2025.services.SubscriberService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+@Tag(name = &quot;Р�РјРїРѕСЂС‚ РґР°РЅРЅС‹С…&quot;, description = &quot;API РґР»СЏ РёРјРїРѕСЂС‚Р° РґР°РЅРЅС‹С… Р°Р±РѕРЅРµРЅС‚РѕРІ&quot;)
+@RequiredArgsConstructor
+@RequestMapping(&quot;/import&quot;)
+@RestController
+public class ImportSubscribersController {
+
+    private final ImportSubscribersService importSubscribersService;
+    private final SubscriberService subscriberService;
+
+    @Operation(
+            summary = &quot;Р�РјРїРѕСЂС‚ JSON С„Р°Р№Р»Р°&quot;,
+            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ JSON С„РѕСЂРјР°С‚Рµ.&quot;,
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;),
+                            examples = @ExampleObject(
+                                    name = &quot;РџСЂРёРјРµСЂ JSON&quot;,
+                                    value = &quot;[\&quot;79001234567\&quot;, \&quot;79009876543\&quot;, \&quot;79111234567\&quot;]&quot;
+                            )
+                    )
+            )
+    )
+    @PostMapping(value = &quot;/json&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity&lt;String&gt; importJson(@RequestPart(&quot;file&quot;) MultipartFile file) {
+        try {
+<span class="nc" id="L45">            List&lt;String&gt; msisdns = importSubscribersService.parseJsonFile(file);</span>
+<span class="nc" id="L46">            subscriberService.saveSubscribers(msisdns);</span>
+<span class="nc" id="L47">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
+<span class="nc" id="L48">        } catch (Exception e) {</span>
+<span class="nc" id="L49">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
+        }
+    }
+
+    @Operation(
+            summary = &quot;Р�РјРїРѕСЂС‚ XML С„Р°Р№Р»Р°&quot;,
+            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ XML С„РѕСЂРјР°С‚Рµ.&quot;,
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;),
+                            examples = @ExampleObject(
+                                    name = &quot;РџСЂРёРјРµСЂ XML&quot;,
+                                    value = &quot;&lt;subscribers&gt;\n    &lt;msisdn&gt;79001234567&lt;/msisdn&gt;\n    &lt;msisdn&gt;79009876543&lt;/msisdn&gt;\n    &lt;msisdn&gt;79111234567&lt;/msisdn&gt;\n&lt;/subscribers&gt;&quot;
+                            )
+                    )
+            )
+    )
+    @PostMapping(value = &quot;/xml&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity&lt;String&gt; importXml(@RequestPart(&quot;file&quot;) MultipartFile file) {
+        try {
+<span class="nc" id="L71">            List&lt;String&gt; msisdns = importSubscribersService.parseXmlFile(file);</span>
+<span class="nc" id="L72">            subscriberService.saveSubscribers(msisdns);</span>
+<span class="nc" id="L73">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
+<span class="nc" id="L74">        } catch (Exception e) {</span>
+<span class="nc" id="L75">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
+        }
+    }
+
+    @Operation(
+            summary = &quot;Р�РјРїРѕСЂС‚ YAML С„Р°Р№Р»Р°&quot;,
+            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ YAML С„РѕСЂРјР°С‚Рµ.&quot;,
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    required = true,
+                    content = @Content(
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;),
+                            examples = @ExampleObject(
+                                    name = &quot;РџСЂРёРјРµСЂ YAML&quot;,
+                                    value = &quot;subscribers:\n  - \&quot;79001234567\&quot;\n  - \&quot;79009876543\&quot;\n  - \&quot;79111234567\&quot;&quot;
+                            )
+                    )
+            )
+    )
+    @PostMapping(value = &quot;/yaml&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity&lt;String&gt; importYaml(@RequestPart(&quot;file&quot;) MultipartFile file) {
+        try {
+<span class="nc" id="L97">            List&lt;String&gt; msisdns = importSubscribersService.parseYamlFile(file);</span>
+<span class="nc" id="L98">            subscriberService.saveSubscribers(msisdns);</span>
+<span class="nc" id="L99">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
+<span class="nc" id="L100">        } catch (Exception e) {</span>
+<span class="nc" id="L101">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

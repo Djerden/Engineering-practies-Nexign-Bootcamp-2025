@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CDRController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ip-nexign-bootcamp-2025</a> &gt; <a href="index.source.html" class="el_package">com.djeno.ipnexignbootcamp2025.controllers</a> &gt; <span class="el_source">CDRController.java</span></div><h1>CDRController.java</h1><pre class="source lang-java linenums">package com.djeno.ipnexignbootcamp2025.controllers;
+
+import com.djeno.ipnexignbootcamp2025.persistence.DTO.GenerateReportResponse;
+import com.djeno.ipnexignbootcamp2025.persistence.DTO.UdrReport;
+import com.djeno.ipnexignbootcamp2025.services.CDRGeneratorService;
+import com.djeno.ipnexignbootcamp2025.services.ReportService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+// 1 Р·Р°РґР°С‡Р°
+
+@Tag(name = &quot;Р“РµРЅРµСЂР°С‚РѕСЂ CDR Р·Р°РїРёСЃРµР№&quot;, description = &quot;API РіРµРЅРµСЂР°С†РёРё CDR Р·Р°РїРёСЃРµР№ РґР»СЏ СЃСѓС‰РµСЃС‚РІСѓСЋС‰РёС… Р°Р±РѕРЅРµРЅС‚РѕРІ (1 Р·Р°РґР°С‡Р°)&quot;)
+@RequiredArgsConstructor
+@RequestMapping(&quot;/cdr&quot;)
+@RestController
+public class CDRController {
+
+    private final CDRGeneratorService cdrGeneratorService;
+    private final ReportService reportService;
+
+    @Operation(
+            summary = &quot;РЎРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ CDR-Р·Р°РїРёСЃРё Р·Р° РіРѕРґ&quot;,
+            description = &quot;РЎРѕР·РґР°РµС‚ С„РёРєС‚РёРІРЅС‹Рµ CDR-Р·Р°РїРёСЃРё РґР»СЏ СѓРєР°Р·Р°РЅРЅРѕРіРѕ РіРѕРґР°.&quot;,
+            responses = {
+                    @ApiResponse(responseCode = &quot;200&quot;, description = &quot;CDR-Р·Р°РїРёСЃРё СѓСЃРїРµС€РЅРѕ СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅС‹&quot;),
+                    @ApiResponse(responseCode = &quot;400&quot;, description = &quot;РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ Р·Р°РїСЂРѕСЃ&quot;)
+            }
+    )
+    @PostMapping(&quot;/generate&quot;)
+    public ResponseEntity&lt;String&gt; generateCDRs(
+            @Parameter(description = &quot;Р“РѕРґ, Р·Р° РєРѕС‚РѕСЂС‹Р№ РЅРµРѕР±С…РѕРґРёРјРѕ СЃРіРµРЅРµСЂРёСЂРѕРІР°С‚СЊ CDR-Р·Р°РїРёСЃРё&quot;, example = &quot;2024&quot;, required = true)
+            @RequestParam int year) {
+<span class="nc" id="L38">        cdrGeneratorService.generateCDRsForYear(year);</span>
+<span class="nc" id="L39">        return ResponseEntity.ok(&quot;CDR Р·Р°РїРёСЃРё Р·Р° &quot; + year + &quot; СѓСЃРїРµС€РЅРѕ СЃРіРµРЅРµСЂРёСЂРѕРІР°РЅС‹!&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
