@@ -58,7 +58,7 @@ public class CDRGeneratorService {
         }
     }
 
-    private CDR generateCDR(Subscriber caller, Subscriber receiver, LocalDateTime startTime) {
+    public CDR generateCDR(Subscriber caller, Subscriber receiver, LocalDateTime startTime) {
         return new CDR(
                 null,
                 random.nextBoolean() ? CallType.OUTGOING : CallType.INCOMING,
@@ -69,7 +69,7 @@ public class CDRGeneratorService {
         );
     }
 
-    private Subscriber getRandomReceiver(List<Subscriber> subscribers, String callerNumber) {
+    public Subscriber getRandomReceiver(List<Subscriber> subscribers, String callerNumber) {
         List<Subscriber> filteredSubscribers = subscribers.stream()
                 .filter(sub -> !sub.getMsisdn().equals(callerNumber))
                 .collect(Collectors.toList());

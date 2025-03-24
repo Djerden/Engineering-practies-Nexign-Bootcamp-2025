@@ -29,11 +29,13 @@ public class UDRService {
 
             Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());
 
-            if (cdr.getCallType() == CallType.INCOMING && cdr.getReceiver().getMsisdn().equals(msisdn)) {
-                incomingDuration = incomingDuration.plus(duration);
-            } else if (cdr.getCallType() == CallType.OUTGOING && cdr.getCaller().getMsisdn().equals(msisdn)) {
-                outgoingDuration = outgoingDuration.plus(duration);
-            }
+            outgoingDuration = outgoingDuration.plus(
+                    cdr.getCaller().getMsisdn().equals(msisdn) ? duration : Duration.ZERO
+            );
+
+            incomingDuration = incomingDuration.plus(
+                    cdr.getReceiver().getMsisdn().equals(msisdn) ? duration : Duration.ZERO
+            );
         }
 
         UdrReport report = new UdrReport();
@@ -56,18 +58,15 @@ public class UDRService {
 
             Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());
 
-            if (cdr.getCallType() == CallType.INCOMING) {
-                incomingDurations.merge(cdr.getReceiver().getMsisdn(), duration, Duration::plus);
-            } else if (cdr.getCallType() == CallType.OUTGOING) {
-                outgoingDurations.merge(cdr.getCaller().getMsisdn(), duration, Duration::plus);
-            }
+            outgoingDurations.merge(cdr.getCaller().getMsisdn(), duration, Duration::plus);
+            incomingDurations.merge(cdr.getReceiver().getMsisdn(), duration, Duration::plus);
         }
 
-        List<UdrReport> reports = new ArrayList<>();
         Set<String> allMsisdns = new HashSet<>();
         allMsisdns.addAll(incomingDurations.keySet());
         allMsisdns.addAll(outgoingDurations.keySet());
 
+        List<UdrReport> reports = new ArrayList<>();
         for (String msisdn : allMsisdns) {
             UdrReport report = new UdrReport();
             report.setMsisdn(msisdn);
@@ -81,8 +80,13 @@ public class UDRService {
     }
 
     private boolean shouldSkipRecord(CDR cdr, Integer year, Integer month) {
-        return (year != null && cdr.getStartTime().getYear() != year) ||
-                (month != null && cdr.getStartTime().getMonthValue() != month);
+        boolean wrongYear = (year != null && cdr.getStartTime().getYear() != year);
+        boolean wrongMonth = (month != null && cdr.getStartTime().getMonthValue() != month);
+
+        if (wrongYear || wrongMonth) {
+            return true;
+        }
+        return false;
     }
 
     private String formatDuration(Duration duration) {

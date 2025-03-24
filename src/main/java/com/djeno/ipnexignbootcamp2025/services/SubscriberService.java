@@ -25,6 +25,8 @@ public class SubscriberService {
                 .map(Subscriber::new)
                 .collect(Collectors.toList());
 
-        subscriberRepository.saveAll(newSubscribers);
+        if (!newSubscribers.isEmpty()) {
+            subscriberRepository.saveAll(newSubscribers);
+        }
     }
 }

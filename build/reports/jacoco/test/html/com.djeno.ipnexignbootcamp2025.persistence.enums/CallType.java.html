@@ -13,10 +13,10 @@ public enum CallType {
     private final int code;
 
     public static CallType fromCode(int code) {
-<span class="nc bnc" id="L16" title="All 3 branches missed.">        return switch (code) {</span>
-<span class="nc" id="L17">            case 1 -&gt; OUTGOING;</span>
-<span class="nc" id="L18">            case 2 -&gt; INCOMING;</span>
-<span class="nc" id="L19">            default -&gt; throw new IllegalArgumentException(&quot;РќРµРёР·РІРµСЃС‚РЅС‹Р№ РєРѕРґ CallType: &quot; + code);</span>
+<span class="fc bfc" id="L16" title="All 3 branches covered.">        return switch (code) {</span>
+<span class="fc" id="L17">            case 1 -&gt; OUTGOING;</span>
+<span class="fc" id="L18">            case 2 -&gt; INCOMING;</span>
+<span class="fc" id="L19">            default -&gt; throw new IllegalArgumentException(&quot;РќРµРёР·РІРµСЃС‚РЅС‹Р№ РєРѕРґ CallType: &quot; + code);</span>
         };
     }
 }

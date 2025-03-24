@@ -25,15 +25,15 @@ public class ImportSubscribersService {
 
 
     public List&lt;String&gt; parseJsonFile(MultipartFile file) throws IOException {
-<span class="nc" id="L28">        return objectMapper.readValue(file.getInputStream(), new TypeReference&lt;List&lt;String&gt;&gt;() {});</span>
+<span class="fc" id="L28">        return objectMapper.readValue(file.getInputStream(), new TypeReference&lt;List&lt;String&gt;&gt;() {});</span>
     }
 
     public List&lt;String&gt; parseXmlFile(MultipartFile file) throws IOException {
-<span class="nc" id="L32">        return xmlMapper.readValue(file.getInputStream(), new TypeReference&lt;List&lt;String&gt;&gt;() {});</span>
+<span class="fc" id="L32">        return xmlMapper.readValue(file.getInputStream(), new TypeReference&lt;List&lt;String&gt;&gt;() {});</span>
     }
 
     public List&lt;String&gt; parseYamlFile(MultipartFile file) throws IOException {
-<span class="nc" id="L36">        return yamlMapper.readValue(file.getInputStream(), new TypeReference&lt;List&lt;String&gt;&gt;() {});</span>
+<span class="fc" id="L36">        return yamlMapper.readValue(file.getInputStream(), new TypeReference&lt;List&lt;String&gt;&gt;() {});</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

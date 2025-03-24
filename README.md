@@ -153,6 +153,8 @@ Password: password
 
 
 #### Тесты:
+Покрытие тестами составило 85%
+![img.png](images/test-coverage-screenshot.png)
 Отчет по тестам можно просмотреть в каталоге: 
 /build/reports/jacoco/test/html/index.html
 

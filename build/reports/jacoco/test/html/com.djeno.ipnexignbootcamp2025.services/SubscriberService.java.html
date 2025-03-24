@@ -20,12 +20,14 @@ public class SubscriberService {
      * @param msisdns СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ Р°Р±РѕРЅРµРЅС‚РѕРІ
      */
     public void saveSubscribers(List&lt;String&gt; msisdns) {
-<span class="nc" id="L23">        List&lt;Subscriber&gt; newSubscribers = msisdns.stream()</span>
-<span class="nc bnc" id="L24" title="All 2 branches missed.">                .filter(msisdn -&gt; !subscriberRepository.existsById(msisdn))</span>
-<span class="nc" id="L25">                .map(Subscriber::new)</span>
-<span class="nc" id="L26">                .collect(Collectors.toList());</span>
+<span class="fc" id="L23">        List&lt;Subscriber&gt; newSubscribers = msisdns.stream()</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">                .filter(msisdn -&gt; !subscriberRepository.existsById(msisdn))</span>
+<span class="fc" id="L25">                .map(Subscriber::new)</span>
+<span class="fc" id="L26">                .collect(Collectors.toList());</span>
 
-<span class="nc" id="L28">        subscriberRepository.saveAll(newSubscribers);</span>
-<span class="nc" id="L29">    }</span>
+<span class="fc bfc" id="L28" title="All 2 branches covered.">        if (!newSubscribers.isEmpty()) {</span>
+<span class="fc" id="L29">            subscriberRepository.saveAll(newSubscribers);</span>
+        }
+<span class="fc" id="L31">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

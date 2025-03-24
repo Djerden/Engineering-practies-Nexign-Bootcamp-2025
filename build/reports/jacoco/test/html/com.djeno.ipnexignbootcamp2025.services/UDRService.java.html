@@ -18,78 +18,82 @@ public class UDRService {
     private final CDRRepository cdrRepository;
 
     public UdrReport getUdrReport(String msisdn, Integer year, Integer month) {
-<span class="nc" id="L21">        List&lt;CDR&gt; cdrs = cdrRepository.findByCaller_MsisdnOrReceiver_Msisdn(msisdn, msisdn);</span>
-<span class="nc" id="L22">        Duration incomingDuration = Duration.ZERO;</span>
-<span class="nc" id="L23">        Duration outgoingDuration = Duration.ZERO;</span>
+<span class="fc" id="L21">        List&lt;CDR&gt; cdrs = cdrRepository.findByCaller_MsisdnOrReceiver_Msisdn(msisdn, msisdn);</span>
+<span class="fc" id="L22">        Duration incomingDuration = Duration.ZERO;</span>
+<span class="fc" id="L23">        Duration outgoingDuration = Duration.ZERO;</span>
 
-<span class="nc bnc" id="L25" title="All 2 branches missed.">        for (CDR cdr : cdrs) {</span>
-<span class="nc bnc" id="L26" title="All 2 branches missed.">            if (shouldSkipRecord(cdr, year, month)) {</span>
-<span class="nc" id="L27">                continue;</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">        for (CDR cdr : cdrs) {</span>
+<span class="fc bfc" id="L26" title="All 2 branches covered.">            if (shouldSkipRecord(cdr, year, month)) {</span>
+<span class="fc" id="L27">                continue;</span>
             }
 
-<span class="nc" id="L30">            Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());</span>
+<span class="fc" id="L30">            Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());</span>
 
-<span class="nc bnc" id="L32" title="All 4 branches missed.">            if (cdr.getCallType() == CallType.INCOMING &amp;&amp; cdr.getReceiver().getMsisdn().equals(msisdn)) {</span>
-<span class="nc" id="L33">                incomingDuration = incomingDuration.plus(duration);</span>
-<span class="nc bnc" id="L34" title="All 4 branches missed.">            } else if (cdr.getCallType() == CallType.OUTGOING &amp;&amp; cdr.getCaller().getMsisdn().equals(msisdn)) {</span>
-<span class="nc" id="L35">                outgoingDuration = outgoingDuration.plus(duration);</span>
-            }
-<span class="nc" id="L37">        }</span>
+<span class="fc" id="L32">            outgoingDuration = outgoingDuration.plus(</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">                    cdr.getCaller().getMsisdn().equals(msisdn) ? duration : Duration.ZERO</span>
+            );
 
-<span class="nc" id="L39">        UdrReport report = new UdrReport();</span>
-<span class="nc" id="L40">        report.setMsisdn(msisdn);</span>
-<span class="nc" id="L41">        report.setIncomingCall(new CallDetail(formatDuration(incomingDuration)));</span>
-<span class="nc" id="L42">        report.setOutcomingCall(new CallDetail(formatDuration(outgoingDuration)));</span>
+<span class="fc" id="L36">            incomingDuration = incomingDuration.plus(</span>
+<span class="fc bfc" id="L37" title="All 2 branches covered.">                    cdr.getReceiver().getMsisdn().equals(msisdn) ? duration : Duration.ZERO</span>
+            );
+<span class="fc" id="L39">        }</span>
 
-<span class="nc" id="L44">        return report;</span>
+<span class="fc" id="L41">        UdrReport report = new UdrReport();</span>
+<span class="fc" id="L42">        report.setMsisdn(msisdn);</span>
+<span class="fc" id="L43">        report.setIncomingCall(new CallDetail(formatDuration(incomingDuration)));</span>
+<span class="fc" id="L44">        report.setOutcomingCall(new CallDetail(formatDuration(outgoingDuration)));</span>
+
+<span class="fc" id="L46">        return report;</span>
     }
 
     public List&lt;UdrReport&gt; getUdrReportsForMonth(int year, int month) {
-<span class="nc" id="L48">        List&lt;CDR&gt; cdrs = cdrRepository.findAll();</span>
-<span class="nc" id="L49">        Map&lt;String, Duration&gt; incomingDurations = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L50">        Map&lt;String, Duration&gt; outgoingDurations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L50">        List&lt;CDR&gt; cdrs = cdrRepository.findAll();</span>
+<span class="fc" id="L51">        Map&lt;String, Duration&gt; incomingDurations = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L52">        Map&lt;String, Duration&gt; outgoingDurations = new HashMap&lt;&gt;();</span>
 
-<span class="nc bnc" id="L52" title="All 2 branches missed.">        for (CDR cdr : cdrs) {</span>
-<span class="nc bnc" id="L53" title="All 2 branches missed.">            if (shouldSkipRecord(cdr, year, month)) {</span>
-<span class="nc" id="L54">                continue;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">        for (CDR cdr : cdrs) {</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">            if (shouldSkipRecord(cdr, year, month)) {</span>
+<span class="nc" id="L56">                continue;</span>
             }
 
-<span class="nc" id="L57">            Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());</span>
+<span class="fc" id="L59">            Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());</span>
 
-<span class="nc bnc" id="L59" title="All 2 branches missed.">            if (cdr.getCallType() == CallType.INCOMING) {</span>
-<span class="nc" id="L60">                incomingDurations.merge(cdr.getReceiver().getMsisdn(), duration, Duration::plus);</span>
-<span class="nc bnc" id="L61" title="All 2 branches missed.">            } else if (cdr.getCallType() == CallType.OUTGOING) {</span>
-<span class="nc" id="L62">                outgoingDurations.merge(cdr.getCaller().getMsisdn(), duration, Duration::plus);</span>
-            }
-<span class="nc" id="L64">        }</span>
+<span class="fc" id="L61">            outgoingDurations.merge(cdr.getCaller().getMsisdn(), duration, Duration::plus);</span>
+<span class="fc" id="L62">            incomingDurations.merge(cdr.getReceiver().getMsisdn(), duration, Duration::plus);</span>
+<span class="fc" id="L63">        }</span>
 
-<span class="nc" id="L66">        List&lt;UdrReport&gt; reports = new ArrayList&lt;&gt;();</span>
-<span class="nc" id="L67">        Set&lt;String&gt; allMsisdns = new HashSet&lt;&gt;();</span>
-<span class="nc" id="L68">        allMsisdns.addAll(incomingDurations.keySet());</span>
-<span class="nc" id="L69">        allMsisdns.addAll(outgoingDurations.keySet());</span>
+<span class="fc" id="L65">        Set&lt;String&gt; allMsisdns = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L66">        allMsisdns.addAll(incomingDurations.keySet());</span>
+<span class="fc" id="L67">        allMsisdns.addAll(outgoingDurations.keySet());</span>
 
-<span class="nc bnc" id="L71" title="All 2 branches missed.">        for (String msisdn : allMsisdns) {</span>
-<span class="nc" id="L72">            UdrReport report = new UdrReport();</span>
-<span class="nc" id="L73">            report.setMsisdn(msisdn);</span>
-<span class="nc" id="L74">            report.setIncomingCall(new CallDetail(formatDuration(incomingDurations.getOrDefault(msisdn, Duration.ZERO))));</span>
-<span class="nc" id="L75">            report.setOutcomingCall(new CallDetail(formatDuration(outgoingDurations.getOrDefault(msisdn, Duration.ZERO))));</span>
+<span class="fc" id="L69">        List&lt;UdrReport&gt; reports = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (String msisdn : allMsisdns) {</span>
+<span class="fc" id="L71">            UdrReport report = new UdrReport();</span>
+<span class="fc" id="L72">            report.setMsisdn(msisdn);</span>
+<span class="fc" id="L73">            report.setIncomingCall(new CallDetail(formatDuration(incomingDurations.getOrDefault(msisdn, Duration.ZERO))));</span>
+<span class="fc" id="L74">            report.setOutcomingCall(new CallDetail(formatDuration(outgoingDurations.getOrDefault(msisdn, Duration.ZERO))));</span>
 
-<span class="nc" id="L77">            reports.add(report);</span>
-<span class="nc" id="L78">        }</span>
+<span class="fc" id="L76">            reports.add(report);</span>
+<span class="fc" id="L77">        }</span>
 
-<span class="nc" id="L80">        return reports;</span>
+<span class="fc" id="L79">        return reports;</span>
     }
 
     private boolean shouldSkipRecord(CDR cdr, Integer year, Integer month) {
-<span class="nc bnc" id="L84" title="All 6 branches missed.">        return (year != null &amp;&amp; cdr.getStartTime().getYear() != year) ||</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">                (month != null &amp;&amp; cdr.getStartTime().getMonthValue() != month);</span>
+<span class="fc bfc" id="L83" title="All 4 branches covered.">        boolean wrongYear = (year != null &amp;&amp; cdr.getStartTime().getYear() != year);</span>
+<span class="pc bpc" id="L84" title="1 of 4 branches missed.">        boolean wrongMonth = (month != null &amp;&amp; cdr.getStartTime().getMonthValue() != month);</span>
+
+<span class="pc bpc" id="L86" title="1 of 4 branches missed.">        if (wrongYear || wrongMonth) {</span>
+<span class="fc" id="L87">            return true;</span>
+        }
+<span class="fc" id="L89">        return false;</span>
     }
 
     private String formatDuration(Duration duration) {
-<span class="nc" id="L89">        long hours = duration.toHours();</span>
-<span class="nc" id="L90">        long minutes = duration.toMinutesPart();</span>
-<span class="nc" id="L91">        long seconds = duration.toSecondsPart();</span>
-<span class="nc" id="L92">        return String.format(&quot;%02d:%02d:%02d&quot;, hours, minutes, seconds);</span>
+<span class="fc" id="L93">        long hours = duration.toHours();</span>
+<span class="fc" id="L94">        long minutes = duration.toMinutesPart();</span>
+<span class="fc" id="L95">        long seconds = duration.toSecondsPart();</span>
+<span class="fc" id="L96">        return String.format(&quot;%02d:%02d:%02d&quot;, hours, minutes, seconds);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

@@ -9,18 +9,18 @@ import jakarta.persistence.Converter;
 
     @Override
     public Integer convertToDatabaseColumn(CallType callType) {
-<span class="nc bnc" id="L12" title="All 2 branches missed.">        if (callType == null) {</span>
-<span class="nc" id="L13">            return null;</span>
+<span class="fc bfc" id="L12" title="All 2 branches covered.">        if (callType == null) {</span>
+<span class="fc" id="L13">            return null;</span>
         }
-<span class="nc" id="L15">        return callType.getCode();</span>
+<span class="fc" id="L15">        return callType.getCode();</span>
     }
 
     @Override
     public CallType convertToEntityAttribute(Integer code) {
-<span class="nc bnc" id="L20" title="All 2 branches missed.">        if (code == null) {</span>
-<span class="nc" id="L21">            return null;</span>
+<span class="fc bfc" id="L20" title="All 2 branches covered.">        if (code == null) {</span>
+<span class="fc" id="L21">            return null;</span>
         }
-<span class="nc" id="L23">        return CallType.fromCode(code);</span>
+<span class="fc" id="L23">        return CallType.fromCode(code);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
