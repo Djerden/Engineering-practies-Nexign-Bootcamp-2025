@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,14 +40,14 @@ public class ReportController {
             @RequestParam String msisdn,
 
             @Parameter(description = &quot;РќР°С‡Р°Р»СЊРЅР°СЏ РґР°С‚Р° РїРµСЂРёРѕРґР° (ISO 8601)&quot;, example = &quot;2025-01-01T00:00:00&quot;, required = true)
-            @RequestParam String startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 
             @Parameter(description = &quot;РљРѕРЅРµС‡РЅР°СЏ РґР°С‚Р° РїРµСЂРёРѕРґР° (ISO 8601)&quot;, example = &quot;2025-01-31T23:59:59&quot;, required = true)
-            @RequestParam String endDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
     ) {
-<span class="nc" id="L46">        UUID requestId = UUID.randomUUID();</span>
-<span class="nc" id="L47">        String status = reportService.generateReport(msisdn, startDate, endDate, requestId, &quot;csv&quot;);</span>
-<span class="nc" id="L48">        return new GenerateReportResponse(requestId, status);</span>
+<span class="nc" id="L48">        UUID requestId = UUID.randomUUID();</span>
+<span class="nc" id="L49">        String status = reportService.generateReport(msisdn, startDate, endDate, requestId, &quot;csv&quot;);</span>
+<span class="nc" id="L50">        return new GenerateReportResponse(requestId, status);</span>
     }
 
     @Operation(
@@ -62,14 +64,14 @@ public class ReportController {
             @RequestParam String msisdn,
 
             @Parameter(description = &quot;РќР°С‡Р°Р»СЊРЅР°СЏ РґР°С‚Р° РїРµСЂРёРѕРґР° (ISO 8601)&quot;, example = &quot;2025-01-01T00:00:00&quot;, required = true)
-            @RequestParam String startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 
             @Parameter(description = &quot;РљРѕРЅРµС‡РЅР°СЏ РґР°С‚Р° РїРµСЂРёРѕРґР° (ISO 8601)&quot;, example = &quot;2025-01-31T23:59:59&quot;, required = true)
-            @RequestParam String endDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
     ) {
-<span class="nc" id="L70">        UUID requestId = UUID.randomUUID();</span>
-<span class="nc" id="L71">        String status = reportService.generateReport(msisdn, startDate, endDate, requestId, &quot;txt&quot;);</span>
-<span class="nc" id="L72">        return new GenerateReportResponse(requestId, status);</span>
+<span class="nc" id="L72">        UUID requestId = UUID.randomUUID();</span>
+<span class="nc" id="L73">        String status = reportService.generateReport(msisdn, startDate, endDate, requestId, &quot;txt&quot;);</span>
+<span class="nc" id="L74">        return new GenerateReportResponse(requestId, status);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

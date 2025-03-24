@@ -3,6 +3,7 @@
 import com.djeno.ipnexignbootcamp2025.services.ImportSubscribersService;
 import com.djeno.ipnexignbootcamp2025.services.SubscriberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,79 +27,81 @@ public class ImportSubscribersController {
 
     @Operation(
             summary = &quot;Р�РјРїРѕСЂС‚ JSON С„Р°Р№Р»Р°&quot;,
-            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ JSON С„РѕСЂРјР°С‚Рµ.&quot;,
+            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ JSON С„РѕСЂРјР°С‚Рµ.\n\n&quot; +
+                    &quot;Р¤РѕСЂРјР°С‚ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р°:\n```json\n&quot; +
+                    &quot;[\&quot;79001234567\&quot;, \&quot;79009876543\&quot;, \&quot;79111234567\&quot;]\n```&quot;,
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;),
-                            examples = @ExampleObject(
-                                    name = &quot;РџСЂРёРјРµСЂ JSON&quot;,
-                                    value = &quot;[\&quot;79001234567\&quot;, \&quot;79009876543\&quot;, \&quot;79111234567\&quot;]&quot;
-                            )
+                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;)
                     )
             )
     )
     @PostMapping(value = &quot;/json&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity&lt;String&gt; importJson(@RequestPart(&quot;file&quot;) MultipartFile file) {
         try {
-<span class="nc" id="L45">            List&lt;String&gt; msisdns = importSubscribersService.parseJsonFile(file);</span>
-<span class="nc" id="L46">            subscriberService.saveSubscribers(msisdns);</span>
-<span class="nc" id="L47">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
-<span class="nc" id="L48">        } catch (Exception e) {</span>
-<span class="nc" id="L49">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
+<span class="nc" id="L44">            List&lt;String&gt; msisdns = importSubscribersService.parseJsonFile(file);</span>
+<span class="nc" id="L45">            subscriberService.saveSubscribers(msisdns);</span>
+<span class="nc" id="L46">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
+<span class="nc" id="L47">        } catch (Exception e) {</span>
+<span class="nc" id="L48">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
         }
     }
 
     @Operation(
             summary = &quot;Р�РјРїРѕСЂС‚ XML С„Р°Р№Р»Р°&quot;,
-            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ XML С„РѕСЂРјР°С‚Рµ.&quot;,
+            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ XML С„РѕСЂРјР°С‚Рµ.\n\n&quot; +
+                    &quot;Р¤РѕСЂРјР°С‚ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р°:\n```xml\n&quot; +
+                    &quot;&lt;subscribers&gt;\n&quot; +
+                    &quot;    &lt;msisdn&gt;79001234567&lt;/msisdn&gt;\n&quot; +
+                    &quot;    &lt;msisdn&gt;79009876543&lt;/msisdn&gt;\n&quot; +
+                    &quot;    &lt;msisdn&gt;79111234567&lt;/msisdn&gt;\n&quot; +
+                    &quot;&lt;/subscribers&gt;\n&quot; +
+                    &quot;```&quot;,
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;),
-                            examples = @ExampleObject(
-                                    name = &quot;РџСЂРёРјРµСЂ XML&quot;,
-                                    value = &quot;&lt;subscribers&gt;\n    &lt;msisdn&gt;79001234567&lt;/msisdn&gt;\n    &lt;msisdn&gt;79009876543&lt;/msisdn&gt;\n    &lt;msisdn&gt;79111234567&lt;/msisdn&gt;\n&lt;/subscribers&gt;&quot;
-                            )
+                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;)
                     )
             )
     )
     @PostMapping(value = &quot;/xml&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity&lt;String&gt; importXml(@RequestPart(&quot;file&quot;) MultipartFile file) {
         try {
-<span class="nc" id="L71">            List&lt;String&gt; msisdns = importSubscribersService.parseXmlFile(file);</span>
-<span class="nc" id="L72">            subscriberService.saveSubscribers(msisdns);</span>
-<span class="nc" id="L73">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
-<span class="nc" id="L74">        } catch (Exception e) {</span>
-<span class="nc" id="L75">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
+<span class="nc" id="L73">            List&lt;String&gt; msisdns = importSubscribersService.parseXmlFile(file);</span>
+<span class="nc" id="L74">            subscriberService.saveSubscribers(msisdns);</span>
+<span class="nc" id="L75">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
+<span class="nc" id="L76">        } catch (Exception e) {</span>
+<span class="nc" id="L77">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
         }
     }
 
     @Operation(
             summary = &quot;Р�РјРїРѕСЂС‚ YAML С„Р°Р№Р»Р°&quot;,
-            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ YAML С„РѕСЂРјР°С‚Рµ.&quot;,
+            description = &quot;Р¤Р°Р№Р» РґРѕР»Р¶РµРЅ СЃРѕРґРµСЂР¶Р°С‚СЊ СЃРїРёСЃРѕРє РЅРѕРјРµСЂРѕРІ РІ YAML С„РѕСЂРјР°С‚Рµ.\n\n&quot; +
+                    &quot;Р¤РѕСЂРјР°С‚ СЃРѕРґРµСЂР¶РёРјРѕРіРѕ С„Р°Р№Р»Р°:\n```yaml\n&quot; +
+                    &quot;- \&quot;79001234567\&quot;\n&quot; +
+                    &quot;- \&quot;79009876543\&quot;\n&quot; +
+                    &quot;- \&quot;79111234567\&quot;\n&quot; +
+                    &quot;```&quot;,
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;),
-                            examples = @ExampleObject(
-                                    name = &quot;РџСЂРёРјРµСЂ YAML&quot;,
-                                    value = &quot;subscribers:\n  - \&quot;79001234567\&quot;\n  - \&quot;79009876543\&quot;\n  - \&quot;79111234567\&quot;&quot;
-                            )
+                            schema = @Schema(type = &quot;string&quot;, format = &quot;binary&quot;)
                     )
             )
     )
     @PostMapping(value = &quot;/yaml&quot;, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity&lt;String&gt; importYaml(@RequestPart(&quot;file&quot;) MultipartFile file) {
         try {
-<span class="nc" id="L97">            List&lt;String&gt; msisdns = importSubscribersService.parseYamlFile(file);</span>
-<span class="nc" id="L98">            subscriberService.saveSubscribers(msisdns);</span>
-<span class="nc" id="L99">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
-<span class="nc" id="L100">        } catch (Exception e) {</span>
-<span class="nc" id="L101">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
+<span class="nc" id="L100">            List&lt;String&gt; msisdns = importSubscribersService.parseYamlFile(file);</span>
+<span class="nc" id="L101">            subscriberService.saveSubscribers(msisdns);</span>
+<span class="nc" id="L102">            return ResponseEntity.ok(&quot;Р”Р°РЅРЅС‹Рµ СѓСЃРїРµС€РЅРѕ РёРјРїРѕСЂС‚РёСЂРѕРІР°РЅС‹&quot;);</span>
+<span class="nc" id="L103">        } catch (Exception e) {</span>
+<span class="nc" id="L104">            return ResponseEntity.badRequest().body(&quot;РћС€РёР±РєР° РїСЂРё РѕР±СЂР°Р±РѕС‚РєРµ С„Р°Р№Р»Р°: &quot; + e.getMessage());</span>
         }
     }
 }

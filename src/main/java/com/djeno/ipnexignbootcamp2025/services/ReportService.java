@@ -22,11 +22,8 @@ public class ReportService {
 
     private final CDRRepository cdrRepository;
 
-    public String generateReport(String msisdn, String startDate, String endDate, UUID requestId, String format) {
-        LocalDateTime start = LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);
-        LocalDateTime end = LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);
-
-        List<CDR> cdrs = cdrRepository.findByMsisdnAndStartTimeBetween(msisdn, start, end);
+    public String generateReport(String msisdn, LocalDateTime startDate, LocalDateTime endDate, UUID requestId, String format) {
+        List<CDR> cdrs = cdrRepository.findByMsisdnAndStartTimeBetween(msisdn, startDate, endDate);
 
         if (cdrs.isEmpty()) {
             return "Данные за указанный период не найдены";
@@ -38,16 +35,11 @@ public class ReportService {
         String filePath = directoryPath + "/" + fileName;
 
         try {
-            // Создаем директорию, если она не существует
             Files.createDirectories(Paths.get(directoryPath));
 
-            // Записываем данные в файл
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                if (format.equalsIgnoreCase("csv")) {
-                    writer.write("ID,Caller,Receiver,CallType,StartTime,EndTime,Duration\n");
-                }
                 for (CDR cdr : cdrs) {
-                    writer.write(formatCdr(cdr, format) + "\n");
+                    writer.write(formatCdr(cdr) + "\n");
                 }
             }
 
@@ -57,33 +49,13 @@ public class ReportService {
         }
     }
 
-    private String formatCdr(CDR cdr, String format) {
-        Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());
-
-        if (format.equalsIgnoreCase("csv")) {
-            return String.format("%d,%s,%s,%s,%s,%s,%02d:%02d:%02d",
-                    cdr.getId(),
-                    cdr.getCaller().getMsisdn(),
-                    cdr.getReceiver().getMsisdn(),
-                    cdr.getCallType().name(),
-                    cdr.getStartTime(),
-                    cdr.getEndTime(),
-                    duration.toHours(),
-                    duration.toMinutesPart(),
-                    duration.toSecondsPart()
-            );
-        } else { // TXT формат
-            return String.format("ID: %d | Caller: %s | Receiver: %s | CallType: %s | StartTime: %s | EndTime: %s | Duration: %02d:%02d:%02d",
-                    cdr.getId(),
-                    cdr.getCaller().getMsisdn(),
-                    cdr.getReceiver().getMsisdn(),
-                    cdr.getCallType().name(),
-                    cdr.getStartTime(),
-                    cdr.getEndTime(),
-                    duration.toHours(),
-                    duration.toMinutesPart(),
-                    duration.toSecondsPart()
-            );
-        }
+    private String formatCdr(CDR cdr) {
+        return String.format("%02d,%s,%s,%s,%s",
+                cdr.getCallType().getCode(),
+                cdr.getCaller().getMsisdn(),
+                cdr.getReceiver().getMsisdn(),
+                cdr.getStartTime(),
+                cdr.getEndTime()
+        );
     }
 }

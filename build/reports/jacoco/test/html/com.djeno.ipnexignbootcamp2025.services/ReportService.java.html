@@ -22,69 +22,41 @@ public class ReportService {
 
     private final CDRRepository cdrRepository;
 
-    public String generateReport(String msisdn, String startDate, String endDate, UUID requestId, String format) {
-<span class="nc" id="L26">        LocalDateTime start = LocalDateTime.parse(startDate, DateTimeFormatter.ISO_DATE_TIME);</span>
-<span class="nc" id="L27">        LocalDateTime end = LocalDateTime.parse(endDate, DateTimeFormatter.ISO_DATE_TIME);</span>
+    public String generateReport(String msisdn, LocalDateTime startDate, LocalDateTime endDate, UUID requestId, String format) {
+<span class="nc" id="L26">        List&lt;CDR&gt; cdrs = cdrRepository.findByMsisdnAndStartTimeBetween(msisdn, startDate, endDate);</span>
 
-<span class="nc" id="L29">        List&lt;CDR&gt; cdrs = cdrRepository.findByMsisdnAndStartTimeBetween(msisdn, start, end);</span>
-
-<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (cdrs.isEmpty()) {</span>
-<span class="nc" id="L32">            return &quot;Р”Р°РЅРЅС‹Рµ Р·Р° СѓРєР°Р·Р°РЅРЅС‹Р№ РїРµСЂРёРѕРґ РЅРµ РЅР°Р№РґРµРЅС‹&quot;;</span>
+<span class="nc bnc" id="L28" title="All 2 branches missed.">        if (cdrs.isEmpty()) {</span>
+<span class="nc" id="L29">            return &quot;Р”Р°РЅРЅС‹Рµ Р·Р° СѓРєР°Р·Р°РЅРЅС‹Р№ РїРµСЂРёРѕРґ РЅРµ РЅР°Р№РґРµРЅС‹&quot;;</span>
         }
 
-<span class="nc bnc" id="L35" title="All 2 branches missed.">        String fileExtension = format.equalsIgnoreCase(&quot;txt&quot;) ? &quot;.txt&quot; : &quot;.csv&quot;;</span>
-<span class="nc" id="L36">        String fileName = msisdn + &quot;_&quot; + requestId + fileExtension;</span>
-<span class="nc" id="L37">        String directoryPath = &quot;./reports&quot;;</span>
-<span class="nc" id="L38">        String filePath = directoryPath + &quot;/&quot; + fileName;</span>
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        String fileExtension = format.equalsIgnoreCase(&quot;txt&quot;) ? &quot;.txt&quot; : &quot;.csv&quot;;</span>
+<span class="nc" id="L33">        String fileName = msisdn + &quot;_&quot; + requestId + fileExtension;</span>
+<span class="nc" id="L34">        String directoryPath = &quot;./reports&quot;;</span>
+<span class="nc" id="L35">        String filePath = directoryPath + &quot;/&quot; + fileName;</span>
 
         try {
-            // РЎРѕР·РґР°РµРј РґРёСЂРµРєС‚РѕСЂРёСЋ, РµСЃР»Рё РѕРЅР° РЅРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚
-<span class="nc" id="L42">            Files.createDirectories(Paths.get(directoryPath));</span>
+<span class="nc" id="L38">            Files.createDirectories(Paths.get(directoryPath));</span>
 
-            // Р—Р°РїРёСЃС‹РІР°РµРј РґР°РЅРЅС‹Рµ РІ С„Р°Р№Р»
-<span class="nc" id="L45">            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {</span>
-<span class="nc bnc" id="L46" title="All 2 branches missed.">                if (format.equalsIgnoreCase(&quot;csv&quot;)) {</span>
-<span class="nc" id="L47">                    writer.write(&quot;ID,Caller,Receiver,CallType,StartTime,EndTime,Duration\n&quot;);</span>
-                }
-<span class="nc bnc" id="L49" title="All 2 branches missed.">                for (CDR cdr : cdrs) {</span>
-<span class="nc" id="L50">                    writer.write(formatCdr(cdr, format) + &quot;\n&quot;);</span>
-<span class="nc" id="L51">                }</span>
+<span class="nc" id="L40">            try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">                for (CDR cdr : cdrs) {</span>
+<span class="nc" id="L42">                    writer.write(formatCdr(cdr) + &quot;\n&quot;);</span>
+<span class="nc" id="L43">                }</span>
             }
 
-<span class="nc" id="L54">            return &quot;РћС‚С‡РµС‚ СЃРѕР·РґР°РЅ СѓСЃРїРµС€РЅРѕ. Р¤Р°Р№Р»: &quot; + filePath;</span>
-<span class="nc" id="L55">        } catch (IOException e) {</span>
-<span class="nc" id="L56">            return &quot;РћС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё РѕС‚С‡РµС‚Р°: &quot; + e.getMessage();</span>
+<span class="nc" id="L46">            return &quot;РћС‚С‡РµС‚ СЃРѕР·РґР°РЅ СѓСЃРїРµС€РЅРѕ. Р¤Р°Р№Р»: &quot; + filePath;</span>
+<span class="nc" id="L47">        } catch (IOException e) {</span>
+<span class="nc" id="L48">            return &quot;РћС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё РѕС‚С‡РµС‚Р°: &quot; + e.getMessage();</span>
         }
     }
 
-    private String formatCdr(CDR cdr, String format) {
-<span class="nc" id="L61">        Duration duration = Duration.between(cdr.getStartTime(), cdr.getEndTime());</span>
-
-<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (format.equalsIgnoreCase(&quot;csv&quot;)) {</span>
-<span class="nc" id="L64">            return String.format(&quot;%d,%s,%s,%s,%s,%s,%02d:%02d:%02d&quot;,</span>
-<span class="nc" id="L65">                    cdr.getId(),</span>
-<span class="nc" id="L66">                    cdr.getCaller().getMsisdn(),</span>
-<span class="nc" id="L67">                    cdr.getReceiver().getMsisdn(),</span>
-<span class="nc" id="L68">                    cdr.getCallType().name(),</span>
-<span class="nc" id="L69">                    cdr.getStartTime(),</span>
-<span class="nc" id="L70">                    cdr.getEndTime(),</span>
-<span class="nc" id="L71">                    duration.toHours(),</span>
-<span class="nc" id="L72">                    duration.toMinutesPart(),</span>
-<span class="nc" id="L73">                    duration.toSecondsPart()</span>
-            );
-        } else { // TXT С„РѕСЂРјР°С‚
-<span class="nc" id="L76">            return String.format(&quot;ID: %d | Caller: %s | Receiver: %s | CallType: %s | StartTime: %s | EndTime: %s | Duration: %02d:%02d:%02d&quot;,</span>
-<span class="nc" id="L77">                    cdr.getId(),</span>
-<span class="nc" id="L78">                    cdr.getCaller().getMsisdn(),</span>
-<span class="nc" id="L79">                    cdr.getReceiver().getMsisdn(),</span>
-<span class="nc" id="L80">                    cdr.getCallType().name(),</span>
-<span class="nc" id="L81">                    cdr.getStartTime(),</span>
-<span class="nc" id="L82">                    cdr.getEndTime(),</span>
-<span class="nc" id="L83">                    duration.toHours(),</span>
-<span class="nc" id="L84">                    duration.toMinutesPart(),</span>
-<span class="nc" id="L85">                    duration.toSecondsPart()</span>
-            );
-        }
+    private String formatCdr(CDR cdr) {
+<span class="nc" id="L53">        return String.format(&quot;%02d,%s,%s,%s,%s&quot;,</span>
+<span class="nc" id="L54">                cdr.getCallType().getCode(),</span>
+<span class="nc" id="L55">                cdr.getCaller().getMsisdn(),</span>
+<span class="nc" id="L56">                cdr.getReceiver().getMsisdn(),</span>
+<span class="nc" id="L57">                cdr.getStartTime(),</span>
+<span class="nc" id="L58">                cdr.getEndTime()</span>
+        );
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

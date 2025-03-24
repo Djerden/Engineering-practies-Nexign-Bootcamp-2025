@@ -62,15 +62,4 @@ public class CDR {
      * Дата и время конца разговора
      */
     private LocalDateTime endTime;
-
-//    public String toCsvString() {
-//        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
-//        return String.join(",",
-//                callType.getCode(),
-//                caller.getMsisdn(),
-//                receiver.getMsisdn(),
-//                startTime.format(formatter),
-//                endTime.format(formatter)
-//        );
-//    }
 }

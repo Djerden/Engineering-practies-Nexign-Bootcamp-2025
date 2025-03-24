@@ -9,8 +9,10 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,10 +40,10 @@ public class ReportController {
             @RequestParam String msisdn,
 
             @Parameter(description = "Начальная дата периода (ISO 8601)", example = "2025-01-01T00:00:00", required = true)
-            @RequestParam String startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 
             @Parameter(description = "Конечная дата периода (ISO 8601)", example = "2025-01-31T23:59:59", required = true)
-            @RequestParam String endDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
     ) {
         UUID requestId = UUID.randomUUID();
         String status = reportService.generateReport(msisdn, startDate, endDate, requestId, "csv");
@@ -62,10 +64,10 @@ public class ReportController {
             @RequestParam String msisdn,
 
             @Parameter(description = "Начальная дата периода (ISO 8601)", example = "2025-01-01T00:00:00", required = true)
-            @RequestParam String startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
 
             @Parameter(description = "Конечная дата периода (ISO 8601)", example = "2025-01-31T23:59:59", required = true)
-            @RequestParam String endDate
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
     ) {
         UUID requestId = UUID.randomUUID();
         String status = reportService.generateReport(msisdn, startDate, endDate, requestId, "txt");

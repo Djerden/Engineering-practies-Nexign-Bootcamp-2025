@@ -5,6 +5,7 @@ build/
 # Разрешаем файлы в build/libs и build/reports
 !build/libs/
 !build/reports/
+!build/libs/ip-nexign-bootcamp-2025-0.0.1-SNAPSHOT.jar
 
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/

@@ -3,6 +3,7 @@ package com.djeno.ipnexignbootcamp2025.controllers;
 import com.djeno.ipnexignbootcamp2025.services.ImportSubscribersService;
 import com.djeno.ipnexignbootcamp2025.services.SubscriberService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,16 +27,14 @@ public class ImportSubscribersController {
 
     @Operation(
             summary = "Импорт JSON файла",
-            description = "Файл должен содержать список номеров в JSON формате.",
+            description = "Файл должен содержать список номеров в JSON формате.\n\n" +
+                    "Формат содержимого файла:\n```json\n" +
+                    "[\"79001234567\", \"79009876543\", \"79111234567\"]\n```",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            schema = @Schema(type = "string", format = "binary"),
-                            examples = @ExampleObject(
-                                    name = "Пример JSON",
-                                    value = "[\"79001234567\", \"79009876543\", \"79111234567\"]"
-                            )
+                            schema = @Schema(type = "string", format = "binary")
                     )
             )
     )
@@ -52,16 +51,19 @@ public class ImportSubscribersController {
 
     @Operation(
             summary = "Импорт XML файла",
-            description = "Файл должен содержать список номеров в XML формате.",
+            description = "Файл должен содержать список номеров в XML формате.\n\n" +
+                    "Формат содержимого файла:\n```xml\n" +
+                    "<subscribers>\n" +
+                    "    <msisdn>79001234567</msisdn>\n" +
+                    "    <msisdn>79009876543</msisdn>\n" +
+                    "    <msisdn>79111234567</msisdn>\n" +
+                    "</subscribers>\n" +
+                    "```",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            schema = @Schema(type = "string", format = "binary"),
-                            examples = @ExampleObject(
-                                    name = "Пример XML",
-                                    value = "<subscribers>\n    <msisdn>79001234567</msisdn>\n    <msisdn>79009876543</msisdn>\n    <msisdn>79111234567</msisdn>\n</subscribers>"
-                            )
+                            schema = @Schema(type = "string", format = "binary")
                     )
             )
     )
@@ -78,16 +80,17 @@ public class ImportSubscribersController {
 
     @Operation(
             summary = "Импорт YAML файла",
-            description = "Файл должен содержать список номеров в YAML формате.",
+            description = "Файл должен содержать список номеров в YAML формате.\n\n" +
+                    "Формат содержимого файла:\n```yaml\n" +
+                    "- \"79001234567\"\n" +
+                    "- \"79009876543\"\n" +
+                    "- \"79111234567\"\n" +
+                    "```",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     required = true,
                     content = @Content(
                             mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
-                            schema = @Schema(type = "string", format = "binary"),
-                            examples = @ExampleObject(
-                                    name = "Пример YAML",
-                                    value = "subscribers:\n  - \"79001234567\"\n  - \"79009876543\"\n  - \"79111234567\""
-                            )
+                            schema = @Schema(type = "string", format = "binary")
                     )
             )
     )
